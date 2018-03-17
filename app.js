@@ -13,10 +13,14 @@ const logParams = (req, res, next) =>{
   console.log('req.params.egg',req.params.egg);
   console.log('req.params.originalUrl',req.originalUrl);
   console.log('req.url',req.url);
-
   next();  
 }
-app.use( logParams);
+
+const timeStamp = ()=>{
+  return new Date().toLocaleString();
+}
+console.log('date now',Date.now());
+// app.use(logParams);
 //middleware starts here
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -25,6 +29,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use( (req, res, next)=>{
   if(req.url.includes("egg")){
   console.log(`
+  YoU fOuNd ThE EaStEr EgG at @${timeStamp()}!
               ,ggadddd8888888bbbbaaa,_
           ,ad888,      \`Y88,      \`Y888baa,
         ,dP"  "Y8b,      \`"Y8b,      \`"Y8888ba,
@@ -44,25 +49,27 @@ app.use( (req, res, next)=>{
       `);
       console.log('eggery');
       res.sendFile(path.join(__dirname, './public', "egg.html"));
+  }else{
+    next();
+
   }
-  next()
 });
 app.use( eggRoutes );
 app.use( logParams);
 
 // TODO: add error handler
-app.use((req,res, next)=>{
-  let error = new Error("Not found, as hell");
-  error.status = 404;
-  next(error);
-});
-app.use((error, req, res, next)=>{
-  console.log(error);
-  // one error handler to rule them all
-  // any error that happens in any app.use function will automatically
-  // be sent to this function and this function will deal with it
-  res.send(error);
-});
+// app.use((req,res, next)=>{
+//   let error = new Error("Not found, as hell");
+//   error.status = 404;
+//   next(error);
+// });
+// app.use((error, req, res, next)=>{
+//   console.log(error);
+//   // one error handler to rule them all
+//   // any error that happens in any app.use function will automatically
+//   // be sent to this function and this function will deal with it
+//   res.send(error);
+// });
 
 
 app.use(express.static(__dirname + "/public", {extensions: "html"}));
